@@ -1,1 +1,13 @@
 flask
+flask-cors
+
+# Bloomberg API (optional - requires Bloomberg Terminal)
+# blpapi
+
+# Data processing
+pandas
+numpy
+
+# Testing
+pytest
+pytest-flask
