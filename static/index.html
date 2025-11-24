@@ -1,9 +1,582 @@
-<html>
-    <head>
-        <title>VS Code Rocks!</title>
-    </head>
-    <body>
-        <h1>VS Code can do that?</h1>
-        <p>Yes it can!</p>
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Infrastructure Platform - Bloomberg Integration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #333;
+        }
+
+        .header h1 {
+            color: #ff6b35;
+            font-size: 1.5rem;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: #1a1a1a;
+            border-radius: 8px;
+            border: 1px solid #333;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: #252525;
+            padding: 1rem;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h2 {
+            font-size: 1rem;
+            color: #fff;
+        }
+
+        .status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .status.connected {
+            background: #1b4332;
+            color: #95d5b2;
+        }
+
+        .status.disconnected {
+            background: #3d1f1f;
+            color: #f8a5a5;
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .market-item {
+            background: #252525;
+            padding: 0.75rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .market-item .ticker {
+            font-weight: 600;
+            color: #ff6b35;
+            font-size: 0.85rem;
+        }
+
+        .market-item .price {
+            font-size: 1.1rem;
+            margin: 0.25rem 0;
+        }
+
+        .market-item .change {
+            font-size: 0.75rem;
+        }
+
+        .change.positive {
+            color: #4ade80;
+        }
+
+        .change.negative {
+            color: #f87171;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: #151515;
+            border-radius: 6px;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 6px;
+            max-width: 85%;
+        }
+
+        .message.user {
+            background: #2563eb;
+            margin-left: auto;
+        }
+
+        .message.agent {
+            background: #333;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #333;
+            border-radius: 6px;
+            background: #252525;
+            color: #fff;
+        }
+
+        .chat-input button {
+            padding: 0.75rem 1.5rem;
+            background: #ff6b35;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .chat-input button:hover {
+            background: #e55a2b;
+        }
+
+        .training-modules {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .module-item {
+            background: #252525;
+            padding: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .module-item:hover {
+            background: #333;
+        }
+
+        .module-item h3 {
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .module-item p {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .tco-form {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .form-group label {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .form-group input, .form-group select {
+            padding: 0.5rem;
+            border: 1px solid #333;
+            border-radius: 4px;
+            background: #252525;
+            color: #fff;
+        }
+
+        .btn {
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn-primary {
+            background: #ff6b35;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #e55a2b;
+        }
+
+        .btn-secondary {
+            background: #333;
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background: #444;
+        }
+
+        .results {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #252525;
+            border-radius: 6px;
+        }
+
+        .results h4 {
+            margin-bottom: 0.5rem;
+            color: #ff6b35;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.25rem 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AI Infrastructure Platform</h1>
+        <p>Bloomberg Integration | TCO Calculator | AI Agent | Training</p>
+    </div>
+
+    <div class="container">
+        <div class="grid">
+            <!-- Bloomberg Market Data -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>GPU Market Data</h2>
+                    <span class="status connected" id="bbg-status">Connected</span>
+                </div>
+                <div class="card-body">
+                    <div class="market-grid" id="market-data">
+                        <div class="market-item">
+                            <div class="ticker">NVDA</div>
+                            <div class="price">$875.28</div>
+                            <div class="change positive">+2.34%</div>
+                        </div>
+                        <div class="market-item">
+                            <div class="ticker">AMD</div>
+                            <div class="price">$178.45</div>
+                            <div class="change positive">+1.82%</div>
+                        </div>
+                        <div class="market-item">
+                            <div class="ticker">INTC</div>
+                            <div class="price">$31.24</div>
+                            <div class="change negative">-0.45%</div>
+                        </div>
+                        <div class="market-item">
+                            <div class="ticker">TSM</div>
+                            <div class="price">$142.67</div>
+                            <div class="change positive">+1.12%</div>
+                        </div>
+                        <div class="market-item">
+                            <div class="ticker">AVGO</div>
+                            <div class="price">$1,324.56</div>
+                            <div class="change positive">+0.89%</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" style="margin-top: 1rem; width: 100%;" onclick="refreshMarketData()">
+                        Refresh Data
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI Agent Chat -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>AI Agent</h2>
+                </div>
+                <div class="card-body">
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="message agent">
+                                Hello! I can help you with GPU economics, TCO calculations, and infrastructure analysis. What would you like to know?
+                            </div>
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" id="chat-input" placeholder="Ask about TCO, GPU comparison, market data..." onkeypress="handleKeyPress(event)">
+                            <button onclick="sendMessage()">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TCO Calculator -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>TCO Calculator</h2>
+                </div>
+                <div class="card-body">
+                    <div class="tco-form">
+                        <div class="form-group">
+                            <label>GPU Type</label>
+                            <select id="gpu-type">
+                                <option value="H100">NVIDIA H100</option>
+                                <option value="H200">NVIDIA H200</option>
+                                <option value="B200">NVIDIA B200</option>
+                                <option value="MI300X">AMD MI300X</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Number of GPUs</label>
+                            <input type="number" id="num-gpus" value="8" min="1" max="10000">
+                        </div>
+                        <div class="form-group">
+                            <label>Power Rate ($/kWh)</label>
+                            <input type="number" id="power-rate" value="0.08" step="0.01" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Time Horizon (Years)</label>
+                            <input type="number" id="years" value="3" min="1" max="10">
+                        </div>
+                        <button class="btn btn-primary" onclick="calculateTCO()">Calculate TCO</button>
+                    </div>
+                    <div class="results" id="tco-results" style="display: none;">
+                        <h4>TCO Analysis</h4>
+                        <div id="tco-breakdown"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Modules -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Training Modules</h2>
+                </div>
+                <div class="card-body">
+                    <div class="training-modules" id="training-modules">
+                        <div class="module-item" onclick="loadModule('gpu_fundamentals')">
+                            <h3>GPU Architecture Fundamentals</h3>
+                            <p>Learn about GPU architectures for AI/ML workloads</p>
+                        </div>
+                        <div class="module-item" onclick="loadModule('tco_modeling')">
+                            <h3>TCO Modeling for GPU Infrastructure</h3>
+                            <p>Master total cost of ownership calculations</p>
+                        </div>
+                        <div class="module-item" onclick="loadModule('neocloud_economics')">
+                            <h3>Neocloud Provider Economics</h3>
+                            <p>Analyze GPU cloud provider business models</p>
+                        </div>
+                        <div class="module-item" onclick="loadModule('bloomberg_integration')">
+                            <h3>Bloomberg Terminal Integration</h3>
+                            <p>Learn to integrate Bloomberg data feeds</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '';
+
+        async function refreshMarketData() {
+            try {
+                const response = await fetch(`${API_BASE}/api/bloomberg/gpu-market`);
+                const data = await response.json();
+                if (data.success) {
+                    updateMarketDisplay(data.data);
+                }
+            } catch (error) {
+                console.error('Error fetching market data:', error);
+            }
+        }
+
+        function updateMarketDisplay(data) {
+            const container = document.getElementById('market-data');
+            container.innerHTML = '';
+            const tickerMap = {
+                'NVDA US Equity': 'NVDA',
+                'AMD US Equity': 'AMD',
+                'INTC US Equity': 'INTC',
+                'TSM US Equity': 'TSM',
+                'AVGO US Equity': 'AVGO'
+            };
+
+            for (const [security, values] of Object.entries(data)) {
+                const ticker = tickerMap[security] || security;
+                const price = parseFloat(values.PX_LAST || 0).toFixed(2);
+                const change = parseFloat(values.CHG_PCT_1D || 0);
+                const changeClass = change >= 0 ? 'positive' : 'negative';
+                const changeSign = change >= 0 ? '+' : '';
+
+                container.innerHTML += `
+                    <div class="market-item">
+                        <div class="ticker">${ticker}</div>
+                        <div class="price">$${price}</div>
+                        <div class="change ${changeClass}">${changeSign}${change.toFixed(2)}%</div>
+                    </div>
+                `;
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            addMessage(message, 'user');
+            input.value = '';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/ai/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    addMessage(data.response.response, 'agent');
+                }
+            } catch (error) {
+                addMessage('Sorry, there was an error processing your request.', 'agent');
+            }
+        }
+
+        function addMessage(text, type) {
+            const container = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            div.className = `message ${type}`;
+            div.textContent = text;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        async function calculateTCO() {
+            const gpuType = document.getElementById('gpu-type').value;
+            const numGpus = parseInt(document.getElementById('num-gpus').value);
+            const powerRate = parseFloat(document.getElementById('power-rate').value);
+            const years = parseInt(document.getElementById('years').value);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/dashboard/tco-calculator`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        gpu_type: gpuType,
+                        num_gpus: numGpus,
+                        power_rate: powerRate,
+                        years: years
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    displayTCOResults(data.result);
+                }
+            } catch (error) {
+                console.error('Error calculating TCO:', error);
+            }
+        }
+
+        function displayTCOResults(result) {
+            const container = document.getElementById('tco-results');
+            const breakdown = document.getElementById('tco-breakdown');
+
+            breakdown.innerHTML = `
+                <div class="result-row">
+                    <span>Capital Expenditure</span>
+                    <span>$${result.capex.toLocaleString()}</span>
+                </div>
+                <div class="result-row">
+                    <span>Annual Power Cost</span>
+                    <span>$${Math.round(result.annual_power).toLocaleString()}</span>
+                </div>
+                <div class="result-row">
+                    <span>Annual Maintenance</span>
+                    <span>$${Math.round(result.annual_maintenance).toLocaleString()}</span>
+                </div>
+                <div class="result-row">
+                    <span>Total TCO</span>
+                    <span>$${Math.round(result.total_tco).toLocaleString()}</span>
+                </div>
+                <div class="result-row">
+                    <span>Cost per GPU-Hour</span>
+                    <span>$${result.tco_per_gpu_hour.toFixed(2)}</span>
+                </div>
+            `;
+            container.style.display = 'block';
+        }
+
+        async function loadModule(moduleId) {
+            try {
+                const response = await fetch(`${API_BASE}/api/training/modules/${moduleId}`);
+                const data = await response.json();
+                if (data.success) {
+                    alert(`Loading module: ${data.module.title}\n\nThis would open the interactive training interface.`);
+                }
+            } catch (error) {
+                console.error('Error loading module:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshMarketData();
+        });
+    </script>
+</body>
 </html>
